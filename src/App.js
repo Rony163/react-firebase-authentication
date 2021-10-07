@@ -1,5 +1,5 @@
 import './App.css';
-import { getAuth, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
 import initializeAuthentication from './Firebase/firebase.init';
 import { useState } from 'react';
 
@@ -49,8 +49,8 @@ function App() {
       setError("Password must be at least 6 characters long.");
       return;
     }
-    if (!/(?=.*[A-Z].*[A-Z])/.test(password)) {
-      setError('password must contain 2 uppercase');
+    if (!/(?=.*[0-9].*[0-9])/.test(password)) {
+      setError('password must contain 2 numeric number');
       return;
     }
     isLogin ? processLogin(email, password) : registerNewUser(email, password);
@@ -74,9 +74,24 @@ function App() {
         const user = result.user;
         console.log(user)
         setError('');
+        verifyEmail();
       })
       .catch(error => {
         setError(error.message);
+      })
+  }
+
+  const verifyEmail = () => {
+    sendEmailVerification(auth.currentUser)
+      .then(result => {
+
+      })
+  }
+
+  const handleResetPassword = () => {
+    sendPasswordResetEmail(auth, email)
+      .then(result => {
+
       })
   }
 
@@ -112,6 +127,7 @@ function App() {
         <button type="submit" className="btn btn-primary">
           {isLogin ? 'Login' : 'Register'}
         </button>
+        <button onClick={handleResetPassword} type="button" className="btn btn-secondary btn-sm">Reset Password</button>
       </form>
       {/* google button */}
       <br /> <br /><br />
