@@ -1,5 +1,5 @@
 import './App.css';
-import { getAuth, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, sendEmailVerification, sendPasswordResetEmail } from "firebase/auth";
+import { getAuth, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, sendEmailVerification, sendPasswordResetEmail, updateProfile } from "firebase/auth";
 import initializeAuthentication from './Firebase/firebase.init';
 import { useState } from 'react';
 
@@ -7,7 +7,7 @@ initializeAuthentication();
 const googleProvider = new GoogleAuthProvider();
 
 function App() {
-
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState({});
@@ -31,6 +31,10 @@ function App() {
 
   const toggleLogin = e => {
     setIsLogIn(e.target.checked)
+  }
+
+  const handleNameChange = e => {
+    setName(e.target.value);
   }
 
   const handleEmailChange = e => {
@@ -75,10 +79,16 @@ function App() {
         console.log(user)
         setError('');
         verifyEmail();
+        setUserName();
       })
       .catch(error => {
         setError(error.message);
       })
+  }
+
+  const setUserName = () => {
+    updateProfile(auth.currentUser, { displayName: name })
+      .then(result => { })
   }
 
   const verifyEmail = () => {
@@ -99,6 +109,14 @@ function App() {
     <div className="mx-5">
       <form onSubmit={handleRegistration}>
         <h3 className="text-primary">Please {isLogin ? 'Login' : 'Registar'}</h3>
+        {!isLogin &&
+          <div className="row mb-3">
+            <label htmlFor="inputName" className="col-sm-2 col-form-label">Name</label>
+            <div className="col-sm-10">
+              <input type="text" onBlur={handleNameChange} className="form-control" id="inputName" placeholder="Your Name" />
+            </div>
+          </div>
+        }
         <div className="row mb-3">
           <label htmlFor="inputEmail3" className="col-sm-2 col-form-label">Email</label>
           <div className="col-sm-10">
