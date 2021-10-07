@@ -30,7 +30,7 @@ function App() {
   }
 
   const toggleLogin = e => {
-    console.log(e.target.checked)
+    setIsLogIn(e.target.checked)
   }
 
   const handleEmailChange = e => {
@@ -56,14 +56,15 @@ function App() {
     isLogin ? processLogin(email, password) : registerNewUser(email, password);
   }
 
-  const processLogin = (email, password){
+  const processLogin = (email, password) => {
     signInWithEmailAndPassword(auth, email, password)
       .then(result => {
         const user = result.user;
         console.log(user);
+        setError('');
       })
       .catch(error => {
-        setError(error.message)
+        setError(error.message);
       })
   }
 
